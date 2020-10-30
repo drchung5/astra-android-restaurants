@@ -8,6 +8,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -16,6 +17,9 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.dchung.astra.android.restaurantreviews.R
+import com.dchung.astra.android.restaurantreviews.api.ApiRepository
+import com.dchung.astra.android.restaurantreviews.data.model.AuthTokenModel
+import com.dchung.astra.android.restaurantreviews.data.model.CredentialsModel
 
 class LoginActivity : AppCompatActivity() {
 
@@ -23,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /////////
+        doAuth()
+        /////////
 
         setContentView(R.layout.activity_login)
 
@@ -111,6 +119,25 @@ class LoginActivity : AppCompatActivity() {
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
+
+    fun doAuth() {
+
+        var apiRepository = ApiRepository()
+
+        var liveAuthTokenModel = apiRepository.fetchAuthToken(
+            CredentialsModel("dbuser","password"))
+
+        liveAuthTokenModel?.observe(this, Observer {
+
+            if (it!=null){
+                Log.wtf("LoginActivity", """"AuthToken : ${it.authToken}""")
+            }else{
+                Log.wtf("LoginActivity", "AuthToken : NULL")
+            }
+
+        })
+
+    }
 }
 
 /**
@@ -127,3 +154,4 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     })
 }
+
