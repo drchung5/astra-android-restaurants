@@ -15,11 +15,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 
 import com.dchung.astra.android.restaurantreviews.R
 import com.dchung.astra.android.restaurantreviews.api.ApiRepository
-import com.dchung.astra.android.restaurantreviews.data.model.AuthTokenModel
 import com.dchung.astra.android.restaurantreviews.data.model.CredentialsModel
+import com.dchung.astra.android.restaurantreviews.data.model.RestaurantModelWrapper
+import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -124,13 +126,20 @@ class LoginActivity : AppCompatActivity() {
 
         var apiRepository = ApiRepository()
 
-        var liveAuthTokenModel = apiRepository.fetchAuthToken(
+        var liveAuthTokenModel = apiRepository.createAuthToken(
             CredentialsModel("dbuser","password"))
 
         liveAuthTokenModel?.observe(this, Observer {
 
             if (it!=null){
                 Log.wtf("LoginActivity", """"AuthToken : ${it.authToken}""")
+
+                val headers = HashMap<String, String>()
+                headers["X-Cassandra-Request-Id"] = UUID.randomUUID().toString()
+                headers["X-Cassandra-Token"] = it.authToken
+
+                var liveRestaurantModelWrapper = apiRepository.getAllRestaurants(headers)
+                extractData(liveRestaurantModelWrapper)
             }else{
                 Log.wtf("LoginActivity", "AuthToken : NULL")
             }
@@ -138,6 +147,21 @@ class LoginActivity : AppCompatActivity() {
         })
 
     }
+
+    fun extractData(liveRestaurantModelWrapper: LiveData<RestaurantModelWrapper>) {
+
+        liveRestaurantModelWrapper?.observe(this, Observer{
+            if(it!=null) {
+                for( r in it.rows ) {
+                    Log.wtf(r.name, """${r.city}, ${r.state}: ${r.rating} stars """)
+                }
+            } else {
+                Log.wtf("extractData", "RestaurantModelWrapper : NULL")
+            }
+        })
+
+    }
+
 }
 
 /**
