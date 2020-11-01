@@ -10,12 +10,12 @@ package com.dchung.astra.android.restaurantreviews.data.model
 //   PRIMARY KEY((state, city), name)
 // );
 
-data class RestaurantModelWrapper(
+data class RestaurantVOWrapper(
         var count: Int,
-        var rows: List<RestaurantModel>
+        var rows: List<RestaurantVO>
 )
 
-data class RestaurantModel (
+data class RestaurantVO (
     var name: String,
     var city: String,
     var state: String,

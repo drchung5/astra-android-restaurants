@@ -1,5 +1,5 @@
 package com.dchung.astra.android.restaurantreviews.data.model
 
-data class AuthTokenModel (
+data class AuthTokenVO (
     val authToken: String
 )

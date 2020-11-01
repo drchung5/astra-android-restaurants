@@ -15,24 +15,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.lifecycle.LiveData
 
 import com.dchung.astra.android.restaurantreviews.R
-import com.dchung.astra.android.restaurantreviews.api.ApiRepository
-import com.dchung.astra.android.restaurantreviews.data.model.CredentialsModel
-import com.dchung.astra.android.restaurantreviews.data.model.RestaurantModelWrapper
-import java.util.*
 
 class LoginActivity : AppCompatActivity() {
+
+    private val TAG = "LoginActivity"
 
     private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /////////
-        doAuth()
-        /////////
 
         setContentView(R.layout.activity_login)
 
@@ -58,20 +51,15 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
+        loginViewModel.loggedIn.observe(this@LoginActivity, Observer {
 
-            loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
-            }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+            val loggedIn = it ?: return@Observer
+
+            if (loggedIn) {
+                Log.wtf(TAG, "LoginActivity informed of successful login")
             }
             setResult(Activity.RESULT_OK)
 
-            //Complete and destroy login activity once successful
-            finish()
         })
 
         username.afterTextChanged {
@@ -92,10 +80,7 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
-                                username.text.toString(),
-                                password.text.toString()
-                        )
+                        loginViewModel.login(username.text.toString(), password.text.toString())
                 }
                 false
             }
@@ -105,62 +90,64 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
-    }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-                applicationContext,
-                "$welcome $displayName",
-                Toast.LENGTH_LONG
-        ).show()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
-    fun doAuth() {
+//    fun login(username: String, password: String) {
+//        loginViewModel.login(username, password)?.observe(this, Observer {
+//
+//            if (it){
+//                Log.wtf(TAG, "Logged in")
+//            }else{
+//                Log.wtf(TAG, "Login FAILED")
+//            }
+//
+//        })
+//    }
 
-        var apiRepository = ApiRepository()
+//    fun doAuth() {
+//
+//        var apiRepository = ApiRepository()
+//
+//        var liveAuthTokenModel = apiRepository.createAuthToken(
+//            CredentialsModel("dbuser","password"))
+//
+//        liveAuthTokenModel?.observe(this, Observer {
+//
+//            if (it!=null){
+//                Log.wtf("LoginActivity", """"AuthToken : ${it.authToken}""")
+//
+//                val headers = HashMap<String, String>()
+//                headers["X-Cassandra-Request-Id"] = UUID.randomUUID().toString()
+//                headers["X-Cassandra-Token"] = it.authToken
+//
+//                var liveRestaurantModelWrapper = apiRepository.getAllRestaurants(headers)
+//                extractData(liveRestaurantModelWrapper)
+//            }else{
+//                Log.wtf("LoginActivity", "AuthToken : NULL")
+//            }
+//
+//        })
+//
+//    }
 
-        var liveAuthTokenModel = apiRepository.createAuthToken(
-            CredentialsModel("dbuser","password"))
-
-        liveAuthTokenModel?.observe(this, Observer {
-
-            if (it!=null){
-                Log.wtf("LoginActivity", """"AuthToken : ${it.authToken}""")
-
-                val headers = HashMap<String, String>()
-                headers["X-Cassandra-Request-Id"] = UUID.randomUUID().toString()
-                headers["X-Cassandra-Token"] = it.authToken
-
-                var liveRestaurantModelWrapper = apiRepository.getAllRestaurants(headers)
-                extractData(liveRestaurantModelWrapper)
-            }else{
-                Log.wtf("LoginActivity", "AuthToken : NULL")
-            }
-
-        })
-
-    }
-
-    fun extractData(liveRestaurantModelWrapper: LiveData<RestaurantModelWrapper>) {
-
-        liveRestaurantModelWrapper?.observe(this, Observer{
-            if(it!=null) {
-                for( r in it.rows ) {
-                    Log.wtf(r.name, """${r.city}, ${r.state}: ${r.rating} stars """)
-                }
-            } else {
-                Log.wtf("extractData", "RestaurantModelWrapper : NULL")
-            }
-        })
-
-    }
+//    fun extractData(liveRestaurantModelWrapper: LiveData<RestaurantModelWrapper>) {
+//
+//        liveRestaurantModelWrapper?.observe(this, Observer{
+//            if(it!=null) {
+//                for( r in it.rows ) {
+//                    Log.wtf(r.name, """${r.city}, ${r.state}: ${r.rating} stars """)
+//                }
+//            } else {
+//                Log.wtf("extractData", "RestaurantModelWrapper : NULL")
+//            }
+//        })
+//
+//    }
 
 }
 

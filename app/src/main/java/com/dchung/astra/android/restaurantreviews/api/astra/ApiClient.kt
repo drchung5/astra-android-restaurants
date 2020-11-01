@@ -1,4 +1,4 @@
-package com.dchung.astra.android.restaurantreviews.api
+package com.dchung.astra.android.restaurantreviews.api.astra
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -15,7 +15,7 @@ class ApiClient {
 
         private var retrofit:Retrofit? = null
 
-        fun getApiClient(): Retrofit {
+        fun getRetrofit(): Retrofit {
 
             val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
