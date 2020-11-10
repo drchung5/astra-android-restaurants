@@ -1,6 +1,7 @@
 package com.dchung.astra.android.restaurantreviews.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -17,6 +18,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.dchung.astra.android.restaurantreviews.R
+import com.dchung.astra.android.restaurantreviews.ui.view_restaurants.RestaurantListActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -57,6 +59,9 @@ class LoginActivity : AppCompatActivity() {
 
             if (loggedIn) {
                 Log.wtf(TAG, "LoginActivity informed of successful login")
+
+                // go to RestaurantsListActivity
+                startActivity(Intent(this, RestaurantListActivity::class.java))
             }
             setResult(Activity.RESULT_OK)
 

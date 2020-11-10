@@ -2,9 +2,9 @@ package com.dchung.astra.android.restaurantreviews.ui.login
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.dchung.astra.android.restaurantreviews.Globals
 
 import com.dchung.astra.android.restaurantreviews.R
+import com.dchung.astra.android.restaurantreviews.Globals
 import com.dchung.astra.android.restaurantreviews.api.astra.ApiClient
 import com.dchung.astra.android.restaurantreviews.api.astra.AuthTokenInterface
 import com.dchung.astra.android.restaurantreviews.data.model.AuthTokenVO
@@ -27,7 +27,6 @@ class LoginViewModel() : ViewModel() {
     }
 
     fun login(username: String, password: String){
-
 
         var loginInterface = ApiClient.getRetrofit().create(AuthTokenInterface::class.java)
 
