@@ -8,9 +8,37 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dchung.astra.android.restaurantreviews.R
 import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVO
+import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVOWrapper
 
-class RestaurantRecyclerViewAdapter(context: Activity, restaurants: Array<RestaurantVO>)
+class RestaurantRecyclerViewAdapter(
+                            private val context: Activity,
+                            private val restaurantVOWrapper: RestaurantVOWrapper,
+                            private val twoPane: Boolean)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+//    private val onClickListener: View.OnClickListener
+//
+//        init {
+//            onClickListener = View.OnClickListener { v ->
+//                val item = v.tag as DummyContent.DummyItem
+//                if (twoPane) {
+//                    val fragment = RestaurantDetailFragment().apply {
+//                        arguments = Bundle().apply {
+//                            putString(RestaurantDetailFragment.ARG_ITEM_ID, item.id)
+//                        }
+//                    }
+//                    context.supportFragmentManager
+//                            .beginTransaction()
+//                            .replace(R.id.restaurant_detail_container, fragment)
+//                            .commit()
+//                } else {
+//                    val intent = Intent(v.context, RestaurantDetailActivity::class.java).apply {
+//                        putExtra(RestaurantDetailFragment.ARG_ITEM_ID, item.id)
+//                    }
+//                    v.context.startActivity(intent)
+//                }
+//            }
+//        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -19,11 +47,14 @@ class RestaurantRecyclerViewAdapter(context: Activity, restaurants: Array<Restau
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val restaurantVO = restaurantVOWrapper.rows.get(position)
+        val restaurantViewHolder = holder as RestaurantViewHolder
+        holder.idView.text = restaurantVO.name
+        holder.contentView.text = """${restaurantVO.city}"""
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return restaurantVOWrapper.count
     }
 }
 

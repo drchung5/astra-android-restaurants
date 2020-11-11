@@ -1,26 +1,17 @@
 package com.dchung.astra.android.restaurantreviews.ui.view_restaurants
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.core.widget.NestedScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dchung.astra.android.restaurantreviews.R
 import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVOWrapper
-import com.dchung.astra.android.restaurantreviews.ui.login.LoginViewModel
-import com.dchung.astra.android.restaurantreviews.ui.login.LoginViewModelFactory
-
-import com.dchung.astra.android.restaurantreviews.ui.view_restaurants.dummy.DummyContent
 
 /**
  * An activity representing a list of Pings. This activity
@@ -54,7 +45,7 @@ class RestaurantListActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                .setAction("Action", null).show()
         }
 
         if (findViewById<NestedScrollView>(R.id.restaurant_detail_container) != null) {
@@ -70,71 +61,12 @@ class RestaurantListActivity : AppCompatActivity() {
 
         restaurants = restaurantViewModel.getAllRestaurants()
 
-//        restaurants.
+        restaurants.observe(this, Observer<RestaurantVOWrapper> {
 
-        setupRecyclerView(findViewById(R.id.restaurant_list))
-    }
+            val recyclerView = findViewById<RecyclerView>(R.id.restaurant_list)
+            recyclerView.adapter = RestaurantRecyclerViewAdapter(this, it, twoPane)
 
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
-    }
+        })
 
-    class SimpleItemRecyclerViewAdapter(private val parentActivity: RestaurantListActivity,
-                                        private val values: List<DummyContent.DummyItem>,
-                                        private val twoPane: Boolean) :
-            RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
-
-        private val TAG = "SimpleItemRecyclerViewAdapter"
-
-        private val onClickListener: View.OnClickListener
-
-        init {
-            onClickListener = View.OnClickListener { v ->
-                val item = v.tag as DummyContent.DummyItem
-                if (twoPane) {
-                    val fragment = RestaurantDetailFragment().apply {
-                        arguments = Bundle().apply {
-                            putString(RestaurantDetailFragment.ARG_ITEM_ID, item.id)
-                        }
-                    }
-                    parentActivity.supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.restaurant_detail_container, fragment)
-                            .commit()
-                } else {
-                    val intent = Intent(v.context, RestaurantDetailActivity::class.java).apply {
-                        putExtra(RestaurantDetailFragment.ARG_ITEM_ID, item.id)
-                    }
-                    v.context.startActivity(intent)
-                }
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.restaurant_list_content, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-            Log.wtf(TAG, """onBindViewHolder{${position}}""")
-
-            val item = values[position]
-            holder.idView.text = item.id
-            holder.contentView.text = item.content
-
-            with(holder.itemView) {
-                tag = item
-                setOnClickListener(onClickListener)
-            }
-        }
-
-        override fun getItemCount() = values.size
-
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val idView: TextView = view.findViewById(R.id.id_text)
-            val contentView: TextView = view.findViewById(R.id.content)
-        }
     }
 }

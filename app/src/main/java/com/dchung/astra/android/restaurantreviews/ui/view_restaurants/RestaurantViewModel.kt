@@ -1,16 +1,11 @@
 package com.dchung.astra.android.restaurantreviews.ui.view_restaurants
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dchung.astra.android.restaurantreviews.Globals
 import com.dchung.astra.android.restaurantreviews.api.astra.ApiClient
-import com.dchung.astra.android.restaurantreviews.api.astra.AuthTokenInterface
 import com.dchung.astra.android.restaurantreviews.api.astra.RestaurantInterface
-import com.dchung.astra.android.restaurantreviews.data.model.AuthTokenVO
-import com.dchung.astra.android.restaurantreviews.data.model.CredentialsVO
-import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVO
 import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVOWrapper
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,20 +43,10 @@ class RestaurantViewModel() : ViewModel() {
                 ) {
                     Log.wtf(TAG,"""response code: ${response.code()}""" )
                     restaurants.value = response.body()
-                    extractData(restaurants)
                 }
             })
 
         return restaurants;
     }
 
-    fun extractData( restaurants: MutableLiveData<RestaurantVOWrapper>) {
-
-        val restaurantIterator = restaurants.value?.rows?.iterator()
-
-        while(restaurantIterator?.hasNext()!!) {
-            val r = restaurantIterator.next()
-            Log.wtf(TAG,"""${r.name}""")
-        }
-    }
 }
