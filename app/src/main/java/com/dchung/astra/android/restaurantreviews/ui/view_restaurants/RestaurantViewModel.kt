@@ -20,11 +20,12 @@ import kotlin.collections.HashMap
 
 class RestaurantViewModel() : ViewModel() {
 
-    private val TAG = "LoginViewModel"
+    private val TAG = "RestaurantViewModel"
 
-    val restaurants = MutableLiveData<RestaurantVOWrapper>()
 
-    fun getAllRestaurants() {
+    fun getAllRestaurants() : MutableLiveData<RestaurantVOWrapper> {
+
+        val restaurants = MutableLiveData<RestaurantVOWrapper>();
 
         var restaurantInterface = ApiClient.getRetrofit().create(RestaurantInterface::class.java)
 
@@ -47,12 +48,14 @@ class RestaurantViewModel() : ViewModel() {
                 ) {
                     Log.wtf(TAG,"""response code: ${response.code()}""" )
                     restaurants.value = response.body()
-                    extractData()
+                    extractData(restaurants)
                 }
             })
+
+        return restaurants;
     }
 
-    fun extractData() {
+    fun extractData( restaurants: MutableLiveData<RestaurantVOWrapper>) {
 
         val restaurantIterator = restaurants.value?.rows?.iterator()
 

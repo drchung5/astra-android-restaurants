@@ -2,6 +2,7 @@ package com.dchung.astra.android.restaurantreviews.ui.view_restaurants
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.core.widget.NestedScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +13,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.dchung.astra.android.restaurantreviews.R
+import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVOWrapper
 import com.dchung.astra.android.restaurantreviews.ui.login.LoginViewModel
 import com.dchung.astra.android.restaurantreviews.ui.login.LoginViewModelFactory
 
@@ -30,6 +33,8 @@ import com.dchung.astra.android.restaurantreviews.ui.view_restaurants.dummy.Dumm
 class RestaurantListActivity : AppCompatActivity() {
 
     private val TAG = "RestaurantListActivity"
+
+    private lateinit var restaurants: MutableLiveData<RestaurantVOWrapper>;
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -63,7 +68,9 @@ class RestaurantListActivity : AppCompatActivity() {
         restaurantViewModel = ViewModelProvider(this, RestaurantViewModelFactory())
             .get(RestaurantViewModel::class.java)
 
-        restaurantViewModel.getAllRestaurants()
+        restaurants = restaurantViewModel.getAllRestaurants()
+
+//        restaurants.
 
         setupRecyclerView(findViewById(R.id.restaurant_list))
     }
@@ -76,6 +83,8 @@ class RestaurantListActivity : AppCompatActivity() {
                                         private val values: List<DummyContent.DummyItem>,
                                         private val twoPane: Boolean) :
             RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
+
+        private val TAG = "SimpleItemRecyclerViewAdapter"
 
         private val onClickListener: View.OnClickListener
 
@@ -108,6 +117,9 @@ class RestaurantListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+            Log.wtf(TAG, """onBindViewHolder{${position}}""")
+
             val item = values[position]
             holder.idView.text = item.id
             holder.contentView.text = item.content
