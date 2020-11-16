@@ -43,8 +43,8 @@ class RestaurantDetailActivity : AppCompatActivity() {
             // using a fragment transaction.
             val fragment = RestaurantDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(RestaurantDetailFragment.ARG_ITEM_ID,
-                            intent.getStringExtra(RestaurantDetailFragment.ARG_ITEM_ID))
+                    putInt(RestaurantDetailFragment.ARG_RESTAURANT_ID,
+                            intent.getIntExtra(RestaurantDetailFragment.ARG_RESTAURANT_ID,0))
                 }
             }
 
