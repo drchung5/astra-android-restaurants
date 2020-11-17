@@ -1,13 +1,18 @@
 package com.dchung.astra.android.restaurantreviews.ui.view_restaurants
 
 import android.os.Bundle
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.RatingBar
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.dchung.astra.android.restaurantreviews.R
 import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVO
 import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVOWrapper
@@ -24,13 +29,6 @@ class RestaurantDetailFragment : Fragment() {
 
     var restaurantId : Int = 0
     lateinit var restaurantVOWrapper : RestaurantVOWrapper
-//    var restaurantVOWrapper = RestaurantVOWrapper(
-//            4, listOf(
-//            RestaurantVO("a","","","",1,"a"),
-//            RestaurantVO("b","","","",2,"b"),
-//            RestaurantVO("c","","","",3,"c"),
-//            RestaurantVO("d","","","",4,"d"),
-//        ))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +69,13 @@ class RestaurantDetailFragment : Fragment() {
 
         // Show the dummy content as text in a TextView.
         restaurantVOWrapper.rows.get(restaurantId).let {
-            rootView.findViewById<TextView>(R.id.restaurant_detail).text = it.review
+
+            val holder = RestaurantDetailHolder(rootView)
+            holder.name.text = it.name
+            holder.cuisine.text = it.cuisine
+            holder.city_state.text = """${it.city}, ${it.state}"""
+            holder.review.text = it.review
+
         }
 
         return rootView
@@ -85,7 +89,7 @@ class RestaurantDetailFragment : Fragment() {
         const val ARG_RESTAURANT_ID = "item_id"
         const val ARG_RESTAURANT_WRAPPER = "restaurant_list"
 
-        // new instance allows csetting bundle values in the fragmen
+        // new instance allows setting bundle values in the fragment
         fun newInstance( restaurantId : Int, restaurantVOWrapper: RestaurantVOWrapper) : RestaurantDetailFragment {
 
             val theRestaurantDetailFragment = RestaurantDetailFragment()
@@ -103,4 +107,11 @@ class RestaurantDetailFragment : Fragment() {
             return theRestaurantDetailFragment
         }
     }
+}
+
+class RestaurantDetailHolder(view: View) {
+    val name: TextView= view.findViewById(R.id.detail_name)
+    val cuisine: TextView= view.findViewById(R.id.detail_cuisine)
+    val city_state: TextView= view.findViewById(R.id.detail_address)
+    val review: TextView= view.findViewById(R.id.detail_review)
 }

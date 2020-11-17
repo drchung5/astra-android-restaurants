@@ -11,4 +11,15 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_restaurant_list">Restaurants</string>
     <string name="title_restaurant_detail">Restaurant Detail</string>
+
+    <!-- Detail Strings -->
+    <string name="restaurant_detail">
+        Sushi<br />
+        Cedar Rapids, IA<br />
+        <div>
+            This is my local sushi restaurant.
+            They also have an extensive Chinese menu.
+            Highly recommended!
+        </div>
+    </string>
 </resources>
