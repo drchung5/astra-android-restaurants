@@ -17,12 +17,11 @@ class RestaurantViewModel() : ViewModel() {
 
     private val TAG = "RestaurantViewModel"
 
-
     fun getAllRestaurants() : MutableLiveData<RestaurantVOWrapper> {
 
-        val restaurants = MutableLiveData<RestaurantVOWrapper>();
+        val restaurantLiveData = MutableLiveData<RestaurantVOWrapper>()
 
-        var restaurantInterface = ApiClient.getRetrofit().create(RestaurantInterface::class.java)
+        val restaurantInterface = ApiClient.getRetrofit().create(RestaurantInterface::class.java)
 
         Log.wtf(TAG, "getAllRestaurants")
 
@@ -30,8 +29,8 @@ class RestaurantViewModel() : ViewModel() {
         headers[Globals.ID_HEADER] = UUID.randomUUID().toString()
         headers[Globals.TOKEN_HEADER] = Globals.authToken
 
-        restaurantInterface?.getAllRestaurants(headers)
-            ?.enqueue(object : Callback<RestaurantVOWrapper> {
+        restaurantInterface.getAllRestaurants(headers)
+            .enqueue(object : Callback<RestaurantVOWrapper> {
 
                 override fun onFailure(call: Call<RestaurantVOWrapper>, t: Throwable) {
                     Log.wtf(TAG, t.message )
@@ -41,12 +40,13 @@ class RestaurantViewModel() : ViewModel() {
                     call: Call<RestaurantVOWrapper>,
                     response: Response<RestaurantVOWrapper>
                 ) {
-                    Log.wtf(TAG,"""response code: ${response.code()}""" )
-                    restaurants.value = response.body()
+                   if( response.isSuccessful ) {
+                       restaurantLiveData.value = response.body()
+                   }
                 }
             })
 
-        return restaurants;
+        return restaurantLiveData
     }
 
 }

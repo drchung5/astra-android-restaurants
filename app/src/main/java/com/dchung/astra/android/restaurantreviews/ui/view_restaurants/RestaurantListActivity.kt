@@ -1,12 +1,11 @@
 package com.dchung.astra.android.restaurantreviews.ui.view_restaurants
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.widget.NestedScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,7 +24,7 @@ class RestaurantListActivity : AppCompatActivity() {
 
     private val TAG = "RestaurantListActivity"
 
-    private lateinit var restaurants: MutableLiveData<RestaurantVOWrapper>;
+    private lateinit var restaurantLiveData: MutableLiveData<RestaurantVOWrapper>
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -54,9 +53,13 @@ class RestaurantListActivity : AppCompatActivity() {
         restaurantViewModel = ViewModelProvider(this, RestaurantViewModelFactory())
             .get(RestaurantViewModel::class.java)
 
-        restaurants = restaurantViewModel.getAllRestaurants()
+        restaurantLiveData = restaurantViewModel.getAllRestaurants()
 
-        restaurants.observe(this, Observer<RestaurantVOWrapper> {
+        restaurantLiveData.observe(this, Observer<RestaurantVOWrapper> {
+
+            Log.wtf(TAG,"restaurants.observe")
+            Log.wtf(TAG,"""restaurantVOWrapper: ${it}""")
+            Log.wtf(TAG,"""restaurants: ${it.rows}""")
 
             val recyclerView = findViewById<RecyclerView>(R.id.restaurant_list)
             recyclerView.adapter = RestaurantRecyclerViewAdapter(this, it, twoPane)

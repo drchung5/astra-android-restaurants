@@ -1,6 +1,5 @@
 package com.dchung.astra.android.restaurantreviews.ui.view_restaurants
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -14,8 +13,8 @@ import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dchung.astra.android.restaurantreviews.R
+import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVO
 import com.dchung.astra.android.restaurantreviews.data.model.RestaurantVOWrapper
-import android.graphics.drawable.Drawable as Drawable
 
 class RestaurantRecyclerViewAdapter(
                             private val context: RestaurantListActivity,
@@ -33,28 +32,32 @@ class RestaurantRecyclerViewAdapter(
 
                 if( it is LinearLayout) {
 
-                    val view: LinearLayout = it as LinearLayout
+                    val view: LinearLayout = it
                     val itemId = view.tag as Int
                     Log.wtf(TAG, """OnClickListener: ${itemId}""")
+                    Log.wtf(TAG, restaurantVOWrapper.toString())
 
                     if (twoPane) {
-                        val fragment = RestaurantDetailFragment().apply {
-                            arguments = Bundle().apply {
-                                putInt(RestaurantDetailFragment.ARG_RESTAURANT_ID, itemId)
-                            }
-                        }
+
+                        Log.wtf(TAG, restaurantVOWrapper.toString())
+
+                        val restaurantDetailFragment =
+                                RestaurantDetailFragment.newInstance(itemId, restaurantVOWrapper)
+
                         context.supportFragmentManager
                                 .beginTransaction()
-                                .replace(R.id.restaurant_detail_container, fragment)
+                                .replace(R.id.restaurant_detail_container, restaurantDetailFragment)
                                 .commit()
                     } else {
                         val intent = Intent(it.context, RestaurantDetailActivity::class.java).apply {
-                            putExtra(RestaurantDetailFragment.ARG_RESTAURANT_ID, itemId  )
+                            putExtra(RestaurantDetailFragment.ARG_RESTAURANT_ID, itemId)
+                            putExtra(RestaurantDetailFragment.ARG_RESTAURANT_WRAPPER, restaurantVOWrapper)
+                            Log.wtf(TAG,"*** insert into intent ***")
                         }
                         it.context.startActivity(intent)
                     }
                 }
-                }
+            }
 
             }
 
@@ -66,6 +69,12 @@ class RestaurantRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+        Log.wtf(TAG,"""position: ${position}""")
+        Log.wtf(TAG,"""restaurantVOWrapper: ${restaurantVOWrapper}""")
+        Log.wtf(TAG,"""restaurants: ${restaurantVOWrapper.rows}""")
+
+
         val restaurantVO = restaurantVOWrapper.rows.get(position)
         val restaurantViewHolder = holder as RestaurantViewHolder
 

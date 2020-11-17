@@ -28,12 +28,12 @@ class LoginViewModel() : ViewModel() {
 
     fun login(username: String, password: String){
 
-        var loginInterface = ApiClient.getRetrofit().create(AuthTokenInterface::class.java)
+        val loginInterface = ApiClient.getRetrofit().create(AuthTokenInterface::class.java)
 
         Log.wtf("ApiRepository:fetchAuthToken", "begin" )
 
-        loginInterface?.createAuthToken(CredentialsVO(username,password))
-                                        ?.enqueue(object : Callback<AuthTokenVO> {
+        loginInterface.createAuthToken(CredentialsVO(username,password))
+                                        .enqueue(object : Callback<AuthTokenVO> {
 
             override fun onFailure(call: Call<AuthTokenVO>, t: Throwable) {
                 Log.wtf("createAuthToken", t.message )

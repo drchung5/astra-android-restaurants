@@ -16,6 +16,8 @@ import com.dchung.astra.android.restaurantreviews.R
  */
 class RestaurantDetailActivity : AppCompatActivity() {
 
+    private val TAG = "RestaurantDetailActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant_detail)
@@ -45,6 +47,8 @@ class RestaurantDetailActivity : AppCompatActivity() {
                 arguments = Bundle().apply {
                     putInt(RestaurantDetailFragment.ARG_RESTAURANT_ID,
                             intent.getIntExtra(RestaurantDetailFragment.ARG_RESTAURANT_ID,0))
+                    putParcelable(RestaurantDetailFragment.ARG_RESTAURANT_WRAPPER,
+                            intent.getParcelableExtra(RestaurantDetailFragment.ARG_RESTAURANT_WRAPPER))
                 }
             }
 
